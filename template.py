@@ -61,6 +61,7 @@ class NaiveBayesClassifier:
                 likelihood += self.calculate_likelihood(word, label)
             if (likelihood > best_class_likelihood):
                 best_class = label
+                best_class_likelihood = likelihood
         return best_class
     
 
