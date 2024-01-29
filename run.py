@@ -24,19 +24,19 @@ def process_word(word: str):
     if (word[0:4] == "www."):
         return None
     
-    if (word[-3:] == "ing"):
-        word = word[:-3]
-    elif (word[-2:] == "ed"):
-        word = word[:-2]
-    elif (word[-4:] == "ness"):
-        word = word[:-4]
-    elif (word[-3:] == "ion"):
-        word = word[:-3]
+    # if (word[-3:] == "ing"):
+    #     word = word[:-3]
+    # elif (word[-2:] == "ed"):
+    #     word = word[:-2]
+    # elif (word[-4:] == "ness"):
+    #     word = word[:-4]
+    # elif (word[-3:] == "ion"):
+    #     word = word[:-3]
 
-    if (word[-1:] == "y"):
-        word = word[:-1] + "i"
-    elif (word[-1:] in ("e", "t", "s")):
-        word = word[:-1]
+    # if (word[-1:] == "y"):
+    #     word = word[:-1] + "i"
+    # elif (word[-1:] in ("e", "t", "s")):
+    #     word = word[:-1]
     
     if (len(word) == 0):
         return None
@@ -60,6 +60,18 @@ def load_data(data_path):
             data.append([preprocess(line['text']),line['label_text']])
     return data
 
+def report_accuracy_on_dataset(data_path):
+    total = 0
+    correct = 0
+    with open(data_path, mode ='r') as file:
+        d = csv.DictReader(file)
+        for line in d:
+            total += 1
+            label = nb_classifier.classify(preprocess(line['text']))
+            if (label == line['label_text']):
+                correct += 1
+    print(correct / total)
+
 
 # train your model and report the duration time
 train_data_path = 'train_data.csv'
@@ -72,18 +84,6 @@ print(end-start)
 # test_string = "I love playing football"
 
 # print(nb_classifier.classify(preprocess(test_string)))
-
-def report_accuracy_on_dataset(data_path):
-    total = 0
-    correct = 0
-    with open(data_path, mode ='r') as file:
-        d = csv.DictReader(file)
-        for line in d:
-            total += 1
-            label = nb_classifier.classify(preprocess(line['text']))
-            if (label == line['label_text']):
-                correct += 1
-    print(correct / total)
 
 report_accuracy_on_dataset(train_data_path)
 report_accuracy_on_dataset('eval_data.csv')

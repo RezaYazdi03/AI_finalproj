@@ -17,6 +17,7 @@ class NaiveBayesClassifier:
         self.classes = classes
         self.class_word_counts: list[dict[str, int]] = [dict() for _ in range(len(self.classes))]
         self.class_counts = [0 for _ in range(len(classes))]
+        self.prior = [0 for _ in range(len(classes))]
         self.vocab = []
 
     def train(self, data: list[tuple[list[str], str]]):
@@ -33,6 +34,10 @@ class NaiveBayesClassifier:
                     for i in range(len(self.classes)):
                         self.class_word_counts[i][word] = 0
                 self.class_word_counts[index][word] += 1
+
+        for label in self.classes:
+            self.prior[self.classes.index(label)] = self.calculate_prior(label)
+
 
     def calculate_prior(self, label):
         # calculate log prior
@@ -56,10 +61,10 @@ class NaiveBayesClassifier:
         best_class = None 
         best_class_likelihood = -float("inf")
         for label in self.classes:
-            likelihood = self.calculate_prior(label)
+            likelihood = self.prior[self.classes.index(label)]
             for word in features:
                 likelihood += self.calculate_likelihood(word, label)
-            if (likelihood > best_class_likelihood):
+            if (likelihood >= best_class_likelihood):
                 best_class = label
                 best_class_likelihood = likelihood
         return best_class
