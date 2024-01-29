@@ -84,7 +84,7 @@ def test(data_path, result_path):
         d = csv.DictReader(input_file)
         for line in d:
             label = nb_classifier.classify(preprocess(line['text']))
-            output_file.write(label)
+            output_file.writelines(label + "\n")
 
 
 # train your model and report the duration time
