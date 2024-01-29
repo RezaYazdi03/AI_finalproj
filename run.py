@@ -26,7 +26,7 @@ def preprocess(tweet_string: str):
 def load_data(data_path):
     # load the csv file and return the data
     data = []
-    with open(data_path, mode ='r')as file:
+    with open(data_path, mode ='r') as file:
         d = csv.DictReader(file)
         for line in d:
             data.append([preprocess(line['text']),line['label_text']])
@@ -39,6 +39,6 @@ classes = ['positive', 'negative', 'neutral']
 nb_classifier = NaiveBayesClassifier(classes)
 nb_classifier.train(load_data(train_data_path))
 
-# test_string = "I love playing football"
+test_string = "I love playing football"
 
-# print(nb_classifier.classify(preprocess(test_string)))
+print(nb_classifier.classify(preprocess(test_string)))
