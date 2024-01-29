@@ -1,6 +1,6 @@
 from template import NaiveBayesClassifier
 import csv
-
+import time
 pronoun =   ( 
             ''
             ,'i' ,'am' ,"i'am" ,
@@ -65,8 +65,10 @@ def load_data(data_path):
 train_data_path = 'train_data.csv'
 classes = ['positive', 'negative', 'neutral']
 nb_classifier = NaiveBayesClassifier(classes)
+start = time.time()
 nb_classifier.train(load_data(train_data_path))
-
+end = time.time()
+print(end-start)
 # test_string = "I love playing football"
 
 # print(nb_classifier.classify(preprocess(test_string)))
