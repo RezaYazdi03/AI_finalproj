@@ -2,25 +2,53 @@ from template import NaiveBayesClassifier
 import csv
 
 pronoun =   ( 
-            '', '.' ,',' ,';' ,':' ,'::'
-            'I' ,'i' ,'am' ,"I'am" ,'my' ,
+            ''
+            ,'i' ,'am' ,"i'am" ,
             'you' ,"you're" ,'are' ,'were' ,
             'he' ,'she' ,'is' ,'was' ,
             'them' ,'this' ,'that' ,
-            'we' ,'We' ,"we're"
+            'we' ,"we're"
             'the' ,'a' ,'an' ,
             'of' ,'in' ,'to' ,'on' ,'not'
             'do', 'does'
             )
 
+def process_word(word: str):
+    word = word.strip(" .!?:;@#'")
+    if (word in pronoun):
+        return None
+    if (word[0:8] == "https://"):
+        return None
+    if (word[0:7] == "http://"):
+        return None
+    if (word[0:4] == "www."):
+        return None
+    
+    if (word[-3:] == "ing"):
+        word = word[:-3]
+    elif (word[-2:] == "ed"):
+        word = word[:-2]
+    elif (word[-4:] == "ness"):
+        word = word[:-4]
+    elif (word[-3:] == "ion"):
+        word = word[:-3]
+
+    if (word[-1:] == "y"):
+        word = word[:-1] + "i"
+    elif (word[-1:] in ("e")):
+        word = word[:-1]
+    
+    if (len(word) == 0):
+        return None
+    return word
+
 def preprocess(tweet_string: str):
     # clean the data and tokenize it
     features = []
-    l = tweet_string.split()
-    for s in l :
-        i = ''.join(e for e in s if e.isalnum())
-        if i not in pronoun:
-            features.append(i)
+    for word in tweet_string.lower().split():
+        f = process_word(word)
+        if (f):
+            features.append(f)
     return features
 
 def load_data(data_path):
@@ -39,6 +67,17 @@ classes = ['positive', 'negative', 'neutral']
 nb_classifier = NaiveBayesClassifier(classes)
 nb_classifier.train(load_data(train_data_path))
 
-test_string = "I love playing football"
+# test_string = "I love playing football"
 
-print(nb_classifier.classify(preprocess(test_string)))
+# print(nb_classifier.classify(preprocess(test_string)))
+
+total = 0
+correct = 0
+with open('eval_data.csv', mode ='r') as file:
+    d = csv.DictReader(file)
+    for line in d:
+        total += 1
+        label = nb_classifier.classify(preprocess(line['text']))
+        if (label == line['label_text']):
+            correct += 1
+print(correct / total)
