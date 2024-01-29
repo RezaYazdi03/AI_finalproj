@@ -30,8 +30,8 @@ class NaiveBayesClassifier:
             for word in features:
                 if word not in self.vocab:
                     self.vocab.append(word)
-                    for index in range(len(self.classes)):
-                        self.class_word_counts[index][word] = 0
+                    for i in range(len(self.classes)):
+                        self.class_word_counts[i][word] = 0
                 self.class_word_counts[index][word] += 1
 
     def calculate_prior(self, label):

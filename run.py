@@ -35,7 +35,7 @@ def process_word(word: str):
 
     if (word[-1:] == "y"):
         word = word[:-1] + "i"
-    elif (word[-1:] in ("e")):
+    elif (word[-1:] in ("e", "t", "s")):
         word = word[:-1]
     
     if (len(word) == 0):
@@ -73,13 +73,17 @@ print(end-start)
 
 # print(nb_classifier.classify(preprocess(test_string)))
 
-total = 0
-correct = 0
-with open('eval_data.csv', mode ='r') as file:
-    d = csv.DictReader(file)
-    for line in d:
-        total += 1
-        label = nb_classifier.classify(preprocess(line['text']))
-        if (label == line['label_text']):
-            correct += 1
-print(correct / total)
+def report_accuracy_on_dataset(data_path):
+    total = 0
+    correct = 0
+    with open(data_path, mode ='r') as file:
+        d = csv.DictReader(file)
+        for line in d:
+            total += 1
+            label = nb_classifier.classify(preprocess(line['text']))
+            if (label == line['label_text']):
+                correct += 1
+    print(correct / total)
+
+report_accuracy_on_dataset(train_data_path)
+report_accuracy_on_dataset('eval_data.csv')
